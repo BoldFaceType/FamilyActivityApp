@@ -1,0 +1,21 @@
+{
+  "active_llm_provider": "local", 
+  "providers": {
+    "local": {
+      "type": "ollama",
+      "endpoint": "http://localhost:11434/api/generate",
+      "model": "llama3"
+    },
+    "cloud": {
+      "type": "gemini",
+      "api_key": "YOUR_GEMINI_API_KEY",
+      "model": "gemini-1.5-flash"
+    }
+  },
+  "family_defaults": {
+    "adults": 2,
+    "children": 2,
+    "child_ages": [5, 6],
+    "location": "Current Location"
+  }
+}
