@@ -17,7 +17,8 @@ import com.familyapp.features.suggestions.models.ActivitySuggestion
 
 @Composable
 fun SuggestionsScreen(
-    viewModel: SuggestionsViewModel = hiltViewModel()
+    viewModel: SuggestionsViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
