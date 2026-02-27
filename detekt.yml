@@ -1,0 +1,47 @@
+# detekt configuration — enforces AGENTS.md Tier 2 Tripwire
+# Cyclomatic Complexity > 10 fails the build
+
+complexity:
+  active: true
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 10
+    ignoreSingleWhenExpression: false
+    ignoreSimpleWhenEntries: false
+    ignoreNestingFunctions: false
+  CognitiveComplexMethod:
+    active: true
+    threshold: 15
+  LongMethod:
+    active: true
+    threshold: 60
+  LongParameterList:
+    active: true
+    functionThreshold: 6
+    constructorThreshold: 7
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 15
+    thresholdInClasses: 12
+    thresholdInObjects: 12
+    thresholdInEnums: 8
+
+style:
+  active: true
+  MagicNumber:
+    active: false  # Disabled: Android resource IDs are numeric
+
+naming:
+  active: true
+
+exceptions:
+  active: true
+
+potential-bugs:
+  active: true
+
+coroutines:
+  active: true
