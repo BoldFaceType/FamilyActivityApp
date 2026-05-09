@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate JSON config
+        run: python -m json.tool config.json > /dev/null
+
+      - name: Ensure sample API key is not replaced
+        shell: python
+        run: |
+          import json
+          with open('config.json', encoding='utf-8') as f:
+              config = json.load(f)
+          api_key = config['providers']['cloud']['api_key']
+          if api_key != 'YOUR_GEMINI_API_KEY':
+              raise SystemExit('config.json contains a non-placeholder cloud API key')
+
+      - name: Check for Android build files
+        shell: bash
+        run: |
+          if [ -f gradlew ] || [ -f build.gradle ] || [ -f settings.gradle ] || [ -f settings.gradle.kts ]; then
+            echo "Android build files present; add a Gradle build job next."
+          else
+            echo "No Gradle wrapper/build files present; running hygiene checks only."
+          fi
