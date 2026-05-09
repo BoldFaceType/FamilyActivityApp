@@ -12,26 +12,26 @@ import androidx.compose.ui.platform.LocalContext
 @Composable
 fun EscapeHatchFab() {
     val context = LocalContext.current
-    
+
     FloatingActionButton(
         onClick = {
             val gmmIntentUri = Uri.parse("geo:0,0?q=restroom")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
-            
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri).apply {
+                setPackage("com.google.android.apps.maps")
+            }
+
             try {
                 context.startActivity(mapIntent)
-            } catch (e: ActivityNotFoundException) {
-                // Fallback to browser or generic map intent
+            } catch (mapsUnavailable: ActivityNotFoundException) {
                 val genericMapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                 try {
                     context.startActivity(genericMapIntent)
-                } catch (e2: Exception) {
+                } catch (fallbackUnavailable: ActivityNotFoundException) {
                     Toast.makeText(context, "Could not open Maps", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     ) {
-        Text("💩")
+        Text("WC")
     }
 }

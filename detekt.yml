@@ -1,5 +1,5 @@
-# detekt configuration — enforces AGENTS.md Tier 2 Tripwire
-# Cyclomatic Complexity > 10 fails the build
+# detekt configuration - enforces AGENTS.md Tier 2 Tripwire
+# Cyclomatic Complexity > 10 fails the build.
 
 complexity:
   active: true
@@ -32,7 +32,7 @@ complexity:
 style:
   active: true
   MagicNumber:
-    active: false  # Disabled: Android resource IDs are numeric
+    active: false
 
 naming:
   active: true

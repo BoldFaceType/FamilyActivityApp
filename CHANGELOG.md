@@ -1,4 +1,8 @@
-# Changelog
+﻿# Changelog
+
+## [1.1.1] - 2026-05-09
+### Added
+- Added GitHub Actions CI for Android build, unit tests, ktlint, and detekt quality gates.
 
 ## [1.1.0] - 2026-02-21
 ### Added

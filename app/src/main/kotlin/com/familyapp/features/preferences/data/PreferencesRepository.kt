@@ -1,9 +1,15 @@
 package com.familyapp.features.preferences.data
 
 import android.content.Context
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.familyapp.features.suggestions.models.*
+import com.familyapp.features.suggestions.models.ActivityConstraints
+import com.familyapp.features.suggestions.models.EnergyLevel
+import com.familyapp.features.suggestions.models.FoodType
+import com.familyapp.features.suggestions.models.WeatherCondition
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -28,15 +34,9 @@ class PreferencesRepository @Inject constructor(
         ActivityConstraints(
             maxWalkingDistanceMeters = prefs[Keys.MAX_WALKING_DISTANCE] ?: 500,
             requiresBathroomAccess = prefs[Keys.REQUIRES_BATHROOM] ?: true,
-            foodPreference = try {
-                FoodType.valueOf(prefs[Keys.FOOD_PREFERENCE] ?: FoodType.KID_FRIENDLY.name)
-            } catch (e: Exception) { FoodType.KID_FRIENDLY },
-            weatherPreference = try {
-                WeatherCondition.valueOf(prefs[Keys.WEATHER_PREFERENCE] ?: WeatherCondition.INDOOR_IF_RAIN.name)
-            } catch (e: Exception) { WeatherCondition.INDOOR_IF_RAIN },
-            energyLevel = try {
-                EnergyLevel.valueOf(prefs[Keys.ENERGY_LEVEL] ?: EnergyLevel.HIGH.name)
-            } catch (e: Exception) { EnergyLevel.HIGH }
+            foodPreference = parseFoodType(prefs[Keys.FOOD_PREFERENCE]),
+            weatherPreference = parseWeatherCondition(prefs[Keys.WEATHER_PREFERENCE]),
+            energyLevel = parseEnergyLevel(prefs[Keys.ENERGY_LEVEL])
         )
     }
 
@@ -59,4 +59,13 @@ class PreferencesRepository @Inject constructor(
     suspend fun updateEnergyLevel(level: EnergyLevel) {
         context.dataStore.edit { prefs -> prefs[Keys.ENERGY_LEVEL] = level.name }
     }
+
+    private fun parseFoodType(value: String?): FoodType =
+        FoodType.entries.firstOrNull { it.name == value } ?: FoodType.KID_FRIENDLY
+
+    private fun parseWeatherCondition(value: String?): WeatherCondition =
+        WeatherCondition.entries.firstOrNull { it.name == value } ?: WeatherCondition.INDOOR_IF_RAIN
+
+    private fun parseEnergyLevel(value: String?): EnergyLevel =
+        EnergyLevel.entries.firstOrNull { it.name == value } ?: EnergyLevel.HIGH
 }

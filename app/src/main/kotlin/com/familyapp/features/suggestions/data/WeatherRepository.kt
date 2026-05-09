@@ -1,13 +1,14 @@
 package com.familyapp.features.suggestions.data
 
 import com.familyapp.features.suggestions.models.WeatherData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 @Singleton
 class WeatherRepository @Inject constructor() {
@@ -31,7 +32,7 @@ class WeatherRepository @Inject constructor() {
                 conditionLabel = wmoCodeToLabel(wmoCode)
             )
         } else {
-            throw Exception("Weather API error: $responseCode")
+            throw IOException("Weather API error: $responseCode")
         }
     }
 

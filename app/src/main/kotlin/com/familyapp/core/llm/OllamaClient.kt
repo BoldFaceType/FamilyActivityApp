@@ -1,12 +1,13 @@
 package com.familyapp.core.llm
 
 import com.familyapp.core.config.LlmProviderConfig
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
+import java.io.IOException
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 class OllamaClient(private val config: LlmProviderConfig) : LlmClient {
 
@@ -34,10 +35,9 @@ class OllamaClient(private val config: LlmProviderConfig) : LlmClient {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             val response = connection.inputStream.bufferedReader().use { it.readText() }
             val jsonResponse = JSONObject(response)
-            // Ollama returns "response" field in the JSON object
             return@withContext jsonResponse.getString("response")
-        } else {
-            throw Exception("Ollama API Error: $responseCode")
         }
+
+        throw IOException("Ollama API Error: $responseCode")
     }
 }
