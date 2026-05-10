@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   pull_request:
@@ -10,17 +10,26 @@ permissions:
   contents: read
 
 jobs:
-  validate:
-    name: Repository hygiene
+  android:
+    name: Android quality gate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          python-version: '3.12'
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.6'
 
       - name: Validate JSON config
         run: python -m json.tool config.json > /dev/null
@@ -35,11 +44,14 @@ jobs:
           if api_key != 'YOUR_GEMINI_API_KEY':
               raise SystemExit('config.json contains a non-placeholder cloud API key')
 
-      - name: Check for Android build files
-        shell: bash
-        run: |
-          if [ -f gradlew ] || [ -f build.gradle ] || [ -f settings.gradle ] || [ -f settings.gradle.kts ]; then
-            echo "Android build files present; add a Gradle build job next."
-          else
-            echo "No Gradle wrapper/build files present; running hygiene checks only."
-          fi
+      - name: Build debug APK
+        run: gradle :app:assembleDebug
+
+      - name: Run unit tests
+        run: gradle test
+
+      - name: Run ktlint
+        run: gradle ktlintCheck
+
+      - name: Run detekt
+        run: gradle detekt
