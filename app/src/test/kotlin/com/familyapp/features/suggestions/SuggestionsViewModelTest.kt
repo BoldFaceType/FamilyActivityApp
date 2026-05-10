@@ -1,7 +1,9 @@
 package com.familyapp.features.suggestions
 
+import com.familyapp.features.map_integration.LocationService
 import com.familyapp.features.preferences.data.PreferencesRepository
 import com.familyapp.features.suggestions.data.SuggestionsRepository
+import com.familyapp.features.suggestions.data.WeatherRepository
 import com.familyapp.features.suggestions.models.ActivityConstraints
 import com.familyapp.features.suggestions.models.ActivitySuggestion
 import io.mockk.coEvery
@@ -26,10 +28,13 @@ class SuggestionsViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private val suggestionsRepo = mockk<SuggestionsRepository>()
     private val preferencesRepo = mockk<PreferencesRepository>()
+    private val locationService = mockk<LocationService>()
+    private val weatherRepository = mockk<WeatherRepository>()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        coEvery { locationService.getCurrentLocation() } returns null
     }
 
     @After
@@ -37,7 +42,12 @@ class SuggestionsViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun makeViewModel() = SuggestionsViewModel(suggestionsRepo, preferencesRepo)
+    private fun makeViewModel() = SuggestionsViewModel(
+        suggestionsRepo,
+        preferencesRepo,
+        locationService,
+        weatherRepository
+    )
 
     @Test
     fun `initial state is Idle`() {
